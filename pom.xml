@@ -23,6 +23,8 @@
         <spotbugs.version>4.9.8</spotbugs.version>
         <maven.pmd.plugin.version>3.28.0</maven.pmd.plugin.version>
         <pmd.version>7.20.0</pmd.version>
+        <pitest.maven.version>1.22.0</pitest.maven.version>
+        <pitest.junit5.plugin.version>1.2.3</pitest.junit5.plugin.version>
         <jspecify.version>1.0.0</jspecify.version>
     </properties>
 
@@ -205,6 +207,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>${pitest.maven.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-junit5-plugin</artifactId>
+                        <version>${pitest.junit5.plugin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
