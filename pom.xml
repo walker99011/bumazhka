@@ -32,6 +32,9 @@
         <pitest.maven.plugin.version>1.22.0</pitest.maven.plugin.version>
         <pitest.junit5.plugin.version>1.2.3</pitest.junit5.plugin.version>
         <jspecify.version>1.0.0</jspecify.version>
+        <juint.version>6.0.2</juint.version>
+        <assertj.version>3.27.6</assertj.version>
+        <jmh.version>1.37</jmh.version>
     </properties>
 
     <dependencyManagement>
