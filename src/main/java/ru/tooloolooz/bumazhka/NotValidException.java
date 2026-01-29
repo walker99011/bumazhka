@@ -1,7 +1,7 @@
-package ru.ivamly.bumazhka.plate;
+package ru.tooloolooz.bumazhka;
 
 public class NotValidException extends RuntimeException {
-    public NotValidException(String message) {
+    public NotValidException(final String message) {
         super(message);
     }
 }
