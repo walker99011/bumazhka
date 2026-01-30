@@ -1,74 +1,113 @@
 package ru.tooloolooz.bumazhka.plate;
 
+import ru.tooloolooz.bumazhka.Assert;
 import ru.tooloolooz.bumazhka.NotValidException;
-import ru.tooloolooz.bumazhka.plate.impl.Type1BVehiclePlateAbstractPlateValidator;
 import ru.tooloolooz.bumazhka.plate.impl.Type1VehiclePlateAbstractPlateValidator;
 
 /**
- * This utility class provides validation for Russian Federation vehicle state registration plates.
- * Allowed formats: М000ММ55 or М000ММ555.
- * 0 - digit indicating the number
- * M - letter indicating the series
- * 5 - digit of the region code
+ * Utility class for validating Russian Federation vehicle registration plates (license plates).
+ * <p>
+ * This class provides validation for state registration plates according to Russian GOST R 50577-2018 standard.
+ * It supports next formats:
+ * <ul>
+ *   <li><b>Type 1/1A</b></li>
+ * </ul>
+ * The class provides both automatic plate type detection and explicit type-based validation.
+ * <p>
+ * Invalid plates cause {@link NotValidException} to be thrown from {@link #validate(String)}
+ * and {@link #validate(String, VehiclePlateType)}.
+ * <p>
+ * Implementation uses separate validator instances for each plate type,
+ * ensuring compliance with formal GOST requirements.
  *
- * @see <a href="https://docs.cntd.ru/document/1200160380"/>
+ * @see VehiclePlateType
+ * @see NotValidException
+ * @see AbstractPlateValidator
+ * @see <a href="https://docs.cntd.ru/document/1200160380">GOST R 50577-2018 State Registration Plates for Vehicles</a>
  */
 public final class VehiclePlateValidator {
     /**
-     * Instance of 1 type vehicle state registration plate validator.
+     * Validator instance for type 1 vehicle registration plates.
      */
-    private static final Type1VehiclePlateAbstractPlateValidator TYPE_1_VEHICLE_PLATE_VALIDATOR = Type1VehiclePlateAbstractPlateValidator.INSTANCE;
+    private static final Type1VehiclePlateAbstractPlateValidator TYPE_1_VEHICLE_PLATE_VALIDATOR =
+            Type1VehiclePlateAbstractPlateValidator.INSTANCE;
 
     /**
-     * Instance of 1b type vehicle state registration plate validator.
+     * Base error message used in exceptions for invalid plates.
      */
-    private static final Type1BVehiclePlateAbstractPlateValidator TYPE_1B_VEHICLE_PLATE_VALIDATOR = Type1BVehiclePlateAbstractPlateValidator.INSTANCE;
+    private static final String EXCEPTION_MESSAGE = "Invalid vehicle state registration plate: ";
 
     /**
-     * Error message.
-     */
-    private final static String EXCEPTION_MESSAGE = "Invalid vehicle state registration plate: ";
-
-    /**
-     * Validates vehicle state registration plate.
+     * This class is a utility class and should not be instantiated.
      *
-     * @param plate vehicle state registration plate.
-     * @throws NotValidException if {@code plate} is {@code null} or {@code invalid}.
+     * @throws UnsupportedOperationException always.
      */
-    public static void validate(final String plate) throws NotValidException {
+    private VehiclePlateValidator() {
+        Assert.unsupported("Utility class should not be instantiated");
+    }
+
+    /**
+     * Validates any vehicle registration plate.
+     * <p>
+     * This is the exception-throwing variant of {@link #isValid(String)}.
+     *
+     * @param plate the registration plate string to validate.
+     * @throws NotValidException if {@code plate} is null or invalid.
+     * @see #isValid(String)
+     */
+    public static void validate(final String plate) {
         if (!isValid(plate)) {
             throw new NotValidException(EXCEPTION_MESSAGE + plate);
         }
     }
 
     /**
-     * Validates vehicle state registration plate.
+     * Validates a vehicle registration plate against a specific type.
+     * <p>
+     * This is the exception-throwing variant of {@link #isValid(String, VehiclePlateType)}.
      *
-     * @param plate vehicle state registration plate.
-     * @param type  vehicle state registration plate {@link VehiclePlateType type}.
-     * @throws NotValidException if {@code plate} is {@code null} or {@code invalid}.
+     * @param plate the registration plate string to validate.
+     * @param type  the required {@link VehiclePlateType} format.
+     * @throws NotValidException if {@code plate} is null or invalid.
+     * @see #isValid(String, VehiclePlateType)
      */
-    public static void validate(final String plate, final VehiclePlateType type) throws NotValidException {
+    public static void validate(final String plate, final VehiclePlateType type) {
         if (!isValid(plate, type)) {
             throw new NotValidException(EXCEPTION_MESSAGE + plate);
         }
     }
 
     /**
-     * Validates vehicle state registration plate.
+     * Validates any vehicle registration plate.
+     * <p>
+     * This method checks the plate against all supported formats.
+     * The validation includes:
+     * <ul>
+     *   <li>Null check.</li>
+     *   <li>Length check.</li>
+     *   <li>Character pattern validation.</li>
+     * </ul>
      *
-     * @param plate vehicle state registration plate.
-     * @return {@code true} if the plate is valid, {@code false} otherwise.
+     * @param plate the registration plate string to validate
+     * @return {@code true} if the plate is valid, {@code false} otherwise
      */
     public static boolean isValid(final String plate) {
-        return TYPE_1_VEHICLE_PLATE_VALIDATOR.isValid(plate)
-               || TYPE_1B_VEHICLE_PLATE_VALIDATOR.isValid(plate);
+        return TYPE_1_VEHICLE_PLATE_VALIDATOR.isValid(plate);
     }
 
     /**
-     * Validates vehicle state registration plate.
+     * Validates a vehicle registration plate against a specific type.
+     * <p>
+     * This method checks if the plate conforms to the specified format type only.
+     * Use this method when you know the expected plate type.
+     * The validation includes:
+     * <ul>
+     *   <li>Null check.</li>
+     *   <li>Length check.</li>
+     *   <li>Character pattern validation.</li>
+     * </ul>
      *
-     * @param plate vehicle state registration plate.
+     * @param plate the registration plate string to validate.
      * @param type  vehicle state registration plate {@link VehiclePlateType type}.
      * @return {@code true} if the plate is valid, {@code false} otherwise.
      */
@@ -77,13 +116,16 @@ public final class VehiclePlateValidator {
     }
 
     /**
-     * @param type vehicle state registration plate {@link VehiclePlateType type}.
-     * @return instance of plate validator based on plate {@link VehiclePlateType type}.
+     * Returns the appropriate validator instance for the specified plate type.
+     * <p>
+     * This internal method provides the strategy pattern implementation for plate validation.
+     *
+     * @param type the vehicle plate type
+     * @return the validator instance for the specified type
      */
-    private static AbstractPlateValidator getValidator(VehiclePlateType type) {
+    private static AbstractPlateValidator getValidator(final VehiclePlateType type) {
         return switch (type) {
             case TYPE_1, TYPE_1A -> TYPE_1_VEHICLE_PLATE_VALIDATOR;
-            case TYPE_1B -> TYPE_1B_VEHICLE_PLATE_VALIDATOR;
         };
     }
 }
