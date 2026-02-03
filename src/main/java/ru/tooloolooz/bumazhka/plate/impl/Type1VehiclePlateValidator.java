@@ -1,6 +1,5 @@
 package ru.tooloolooz.bumazhka.plate.impl;
 
-import ru.tooloolooz.bumazhka.Assert;
 import ru.tooloolooz.bumazhka.VehicleRegionCodeValidator;
 import ru.tooloolooz.bumazhka.plate.AbstractPlateValidator;
 import ru.tooloolooz.bumazhka.plate.VehiclePlateType;
@@ -10,13 +9,6 @@ import ru.tooloolooz.bumazhka.plate.VehiclePlateType;
  * <p>
  * This utility class provides validation for Russian Federation vehicle state registration plates.
  * <p>
- * <b>Allowed formats:</b> {@code М000ММ55} or {@code М000ММ555}.
- * <ul>
- *   <li>0 - digit indicating the number.</li>
- *   <li>M - letter indicating the series.</li>
- *   <li>5 - digit of the region code.</li>
- * </ul>
- * <b>Validation Scope:</b>
  * This validator checks:
  * <ul>
  *   <li>String length (must be 8 or 9 characters)</li>
@@ -24,9 +16,6 @@ import ru.tooloolooz.bumazhka.plate.VehiclePlateType;
  *   <li>Allowed Cyrillic letter set for series positions</li>
  *   <li>Region code validity using {@link VehicleRegionCodeValidator}</li>
  * </ul>
- * <b>Thread Safety:</b>
- * This class is thread-safe as it contains no mutable state and all
- * validation logic uses only method parameters and immutable constants.
  *
  * @see AbstractPlateValidator
  * @see VehiclePlateType#TYPE_1
@@ -93,9 +82,7 @@ public final class Type1VehiclePlateValidator implements AbstractPlateValidator 
     /**
      * Private constructor to enforce non-instantiability.
      * <p>
-     * This class follows the utility class pattern and should not be instantiated.
-     * All functionality is provided through static methods and the singleton instance
-     * {@link #INSTANCE}.
+     * All functionality is provided through static methods and the singleton instance {@link #INSTANCE}.
      */
     private Type1VehiclePlateValidator() {
         // Private constructor to prevent instantiation.
@@ -103,13 +90,9 @@ public final class Type1VehiclePlateValidator implements AbstractPlateValidator 
 
     /**
      * {@inheritDoc}
-     * <p>
-     * <b>Allowed Cyrillic letters (12 total):</b> 'А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'
-     * <p>
      */
     @Override
     public boolean isValid(final String plate) {
-        Assert.notNull(plate, "Plate must be not null");
         final int plateLength = plate.length();
         if (plateLength < MIN_PLATE_SIZE || MAX_PLATE_SIZE < plateLength) {
             return false;

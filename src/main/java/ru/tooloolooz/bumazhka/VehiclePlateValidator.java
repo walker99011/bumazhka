@@ -8,7 +8,8 @@ import ru.tooloolooz.bumazhka.plate.impl.Type1VehiclePlateValidator;
  * Utility class for validating Russian Federation vehicle registration plates (license plates).
  * <p>
  * This class provides validation for state registration plates according to Russian GOST R 50577-2018 standard.
- * It supports next formats:
+ * <p>
+ * <b>It supports next formats:</b>
  * <ul>
  *   <li><b>Type 1/1A</b></li>
  * </ul>
@@ -19,6 +20,10 @@ import ru.tooloolooz.bumazhka.plate.impl.Type1VehiclePlateValidator;
  * <p>
  * Implementation uses separate validator instances for each plate type,
  * ensuring compliance with formal GOST requirements.
+ * <p>
+ * <b>Thread Safety:</b>
+ * This validator is thread-safe as it contains no mutable state and all
+ * validation logic uses only method parameters and immutable constants.
  *
  * @see VehiclePlateType
  * @see NotValidException
@@ -30,11 +35,6 @@ public final class VehiclePlateValidator {
      * Validator instance for type 1 vehicle registration plates.
      */
     private static final Type1VehiclePlateValidator TYPE_1_PLATE_VALIDATOR = Type1VehiclePlateValidator.INSTANCE;
-
-    /**
-     * Base error message used in exceptions for invalid plates.
-     */
-    private static final String EXCEPTION_MESSAGE = "Invalid vehicle state registration plate: ";
 
     /**
      * This class is a utility class and should not be instantiated.
@@ -56,7 +56,7 @@ public final class VehiclePlateValidator {
      */
     public static void validate(final String plate) {
         if (!isValid(plate)) {
-            throw new NotValidException(EXCEPTION_MESSAGE + plate);
+            throw new NotValidException("Invalid vehicle state registration plate: " + plate);
         }
     }
 
@@ -72,7 +72,7 @@ public final class VehiclePlateValidator {
      */
     public static void validate(final String plate, final VehiclePlateType type) {
         if (!isValid(plate, type)) {
-            throw new NotValidException(EXCEPTION_MESSAGE + plate);
+            throw new NotValidException("Invalid vehicle state registration plate: " + plate);
         }
     }
 
@@ -80,11 +80,20 @@ public final class VehiclePlateValidator {
      * Validates any vehicle registration plate.
      * <p>
      * This method checks the plate against all supported formats.
+     * <p>
+     * The validation includes:
+     * <ul>
+     *   <li>Null check.</li>
+     *   <li>Length check.</li>
+     *   <li>Character pattern validation.</li>
+     * </ul>
      *
      * @param plate the registration plate string to validate
      * @return {@code true} if the plate is valid, {@code false} otherwise
      */
     public static boolean isValid(final String plate) {
+        Assert.notNull(plate, "Plate must be not null");
+
         return TYPE_1_PLATE_VALIDATOR.isValid(plate);
     }
 
@@ -93,12 +102,22 @@ public final class VehiclePlateValidator {
      * <p>
      * This method checks if the plate conforms to the specified format type only.
      * Use this method when you know the expected plate type.
+     * <p>
+     * The validation includes:
+     * <ul>
+     *   <li>Null check.</li>
+     *   <li>Length check.</li>
+     *   <li>Character pattern validation.</li>
+     * </ul>
      *
      * @param plate the registration plate string to validate.
      * @param type  vehicle state registration plate {@link VehiclePlateType type}.
      * @return {@code true} if the plate is valid, {@code false} otherwise.
      */
     public static boolean isValid(final String plate, final VehiclePlateType type) {
+        Assert.notNull(plate, "Plate must be not null");
+        Assert.notNull(type, "Type must be not null");
+
         return getValidator(type).isValid(plate);
     }
 

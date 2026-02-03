@@ -1,11 +1,12 @@
 package ru.tooloolooz.bumazhka;
 
 /**
- * Generic validation exception indicating that a value or object fails to meet required constraints or business rules.
+ * Generic validation exception indicating that a value or object fails to meet required
+ * constraints or business rules.
  * <p>
- * This runtime exception serves as a general-purpose validation error indicator that can be used across various
- * validation contexts. It signals that a validation check has failed due to invalid input data, incorrect format,
- * or violation of business rules.
+ * This runtime exception serves as a general-purpose validation error indicator that can
+ * be used across various validation contexts. It signals that a validation check has failed
+ * due to invalid input data, incorrect format, or violation of business rules.
  */
 public class NotValidException extends RuntimeException {
 

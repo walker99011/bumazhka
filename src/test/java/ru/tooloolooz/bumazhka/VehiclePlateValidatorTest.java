@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import ru.tooloolooz.bumazhka.plate.VehiclePlateType;
 
 import java.lang.reflect.Constructor;
@@ -27,25 +28,25 @@ class VehiclePlateValidatorTest {
      */
     private static Stream<Arguments> validLicencePlates() {
         return Stream.of(
-                Arguments.of("А019АА61", true),
-                Arguments.of("А019АА161", true)
+                Arguments.of("А019АА61"),
+                Arguments.of("А019АА161")
         );
     }
 
     private static Stream<Arguments> invalidLicencePlates() {
         return Stream.of(
-                Arguments.of("а019АА161", false),
-                Arguments.of("Аа19АА161", false),
-                Arguments.of("А0а9АА161", false),
-                Arguments.of("А01аАА161", false),
-                Arguments.of("А019аА161", false),
-                Arguments.of("А019Аа161", false),
-                Arguments.of("А019ААа61", false),
-                Arguments.of("А019АА1а1", false),
-                Arguments.of("А019АА16а", false),
-                Arguments.of("AА019АА161", false),
-                Arguments.of("А019АА161A", false),
-                Arguments.of("", false)
+                Arguments.of("а019АА161"),
+                Arguments.of("Аа19АА161"),
+                Arguments.of("А0а9АА161"),
+                Arguments.of("А01аАА161"),
+                Arguments.of("А019аА161"),
+                Arguments.of("А019Аа161"),
+                Arguments.of("А019ААа61"),
+                Arguments.of("А019АА1а1"),
+                Arguments.of("А019АА16а"),
+                Arguments.of("AА019АА161"),
+                Arguments.of("А019АА161A"),
+                Arguments.of("")
         );
     }
 
@@ -68,43 +69,29 @@ class VehiclePlateValidatorTest {
     }
 
     @ParameterizedTest
-    @MethodSource({"validLicencePlates", "invalidLicencePlates"})
-    void isValidTestForAnyPlateType(String code, boolean result) {
-        assertThat(VehiclePlateValidator.isValid(code))
-                .isEqualTo(result);
-    }
-
-    @ParameterizedTest
-    @MethodSource({"validLicencePlates", "invalidLicencePlates"})
-    void isValidTestForType1(String code, boolean result) {
-        assertThat(VehiclePlateValidator.isValid(code, VehiclePlateType.TYPE_1))
-                .isEqualTo(result);
-    }
-
-    @ParameterizedTest
-    @MethodSource({"validLicencePlates", "invalidLicencePlates"})
-    void isValidTestForType1A(String code, boolean result) {
-        assertThat(VehiclePlateValidator.isValid(code, VehiclePlateType.TYPE_1A))
-                .isEqualTo(result);
-    }
-
-    @ParameterizedTest
     @MethodSource("validLicencePlates")
-    void validateTest(String code) {
+    void validateTestForValidLicensePlates(String code) {
         assertThatCode(() -> VehiclePlateValidator.validate(code))
                 .doesNotThrowAnyException();
     }
 
     @ParameterizedTest
     @MethodSource("validLicencePlates")
-    void qwe(String code) {
+    void validateTestForValidLicensePlatesType1(String code) {
         assertThatCode(() -> VehiclePlateValidator.validate(code, VehiclePlateType.TYPE_1))
                 .doesNotThrowAnyException();
     }
 
     @ParameterizedTest
+    @MethodSource("validLicencePlates")
+    void validateTestForValidLicensePlatesType1A(String code) {
+        assertThatCode(() -> VehiclePlateValidator.validate(code, VehiclePlateType.TYPE_1A))
+                .doesNotThrowAnyException();
+    }
+
+    @ParameterizedTest
     @MethodSource("invalidLicencePlates")
-    void validateTestForAnyPlateType(String code) {
+    void validateTestForInvalidLicensePlates(String code) {
         assertThatThrownBy(() -> VehiclePlateValidator.validate(code))
                 .isInstanceOf(NotValidException.class)
                 .extracting(Throwable::getMessage)
@@ -113,17 +100,8 @@ class VehiclePlateValidatorTest {
 
     @ParameterizedTest
     @MethodSource("invalidLicencePlates")
-    void validateTestForType1(String code) {
+    void validateTestForInvalidLicensePlatesForType1(String code) {
         assertThatThrownBy(() -> VehiclePlateValidator.validate(code, VehiclePlateType.TYPE_1))
-                .isInstanceOf(NotValidException.class)
-                .extracting(Throwable::getMessage)
-                .isEqualTo("Invalid vehicle state registration plate: " + code);
-    }
-
-    @ParameterizedTest
-    @MethodSource("invalidLicencePlates")
-    void validateTestForType1A(String code) {
-        assertThatThrownBy(() -> VehiclePlateValidator.validate(code, VehiclePlateType.TYPE_1A))
                 .isInstanceOf(NotValidException.class)
                 .extracting(Throwable::getMessage)
                 .isEqualTo("Invalid vehicle state registration plate: " + code);
@@ -131,7 +109,7 @@ class VehiclePlateValidatorTest {
 
     @Test
     @SuppressWarnings("NullAway")
-    void validateTestWithNullCode() {
+    void validateTestForNullCode() {
         assertThatThrownBy(() -> VehiclePlateValidator.validate(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Plate must be not null");
@@ -139,9 +117,17 @@ class VehiclePlateValidatorTest {
 
     @Test
     @SuppressWarnings("NullAway")
-    void validateTestWithTypeAndNullCode() {
+    void validateTestForNullCodeType1() {
         assertThatThrownBy(() -> VehiclePlateValidator.validate(null, VehiclePlateType.TYPE_1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Plate must be not null");
+    }
+
+    @Test
+    @SuppressWarnings("NullAway")
+    void validateTestForNullType() {
+        assertThatThrownBy(() -> VehiclePlateValidator.validate("", null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Type must be not null");
     }
 }

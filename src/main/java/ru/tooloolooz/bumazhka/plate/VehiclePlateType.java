@@ -19,6 +19,9 @@ public enum VehiclePlateType {
      *   <li>M - letter indicating the series.</li>
      *   <li>5 - digit of the region code.</li>
      * </ul>
+     *
+     * <b>Allowed Cyrillic letters (12 total) for series:</b>
+     * 'А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'
      */
     TYPE_1,
 
