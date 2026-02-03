@@ -13,8 +13,7 @@ public final class Assert {
      *
      * @throws UnsupportedOperationException always.
      */
-    private Assert() {
-        unsupported("Utility class should not be instantiated");
+    private Assert() { unsupported("Utility class should not be instantiated");
     }
 
     /**

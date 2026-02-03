@@ -2,7 +2,7 @@ package ru.tooloolooz.bumazhka;
 
 import ru.tooloolooz.bumazhka.plate.AbstractPlateValidator;
 import ru.tooloolooz.bumazhka.plate.VehiclePlateType;
-import ru.tooloolooz.bumazhka.plate.impl.Type1VehiclePlateAbstractPlateValidator;
+import ru.tooloolooz.bumazhka.plate.impl.Type1VehiclePlateValidator;
 
 /**
  * Utility class for validating Russian Federation vehicle registration plates (license plates).
@@ -29,8 +29,7 @@ public final class VehiclePlateValidator {
     /**
      * Validator instance for type 1 vehicle registration plates.
      */
-    private static final Type1VehiclePlateAbstractPlateValidator TYPE_1_VEHICLE_PLATE_VALIDATOR =
-            Type1VehiclePlateAbstractPlateValidator.INSTANCE;
+    private static final Type1VehiclePlateValidator TYPE_1_PLATE_VALIDATOR = Type1VehiclePlateValidator.INSTANCE;
 
     /**
      * Base error message used in exceptions for invalid plates.
@@ -81,18 +80,12 @@ public final class VehiclePlateValidator {
      * Validates any vehicle registration plate.
      * <p>
      * This method checks the plate against all supported formats.
-     * The validation includes:
-     * <ul>
-     *   <li>Null check.</li>
-     *   <li>Length check.</li>
-     *   <li>Character pattern validation.</li>
-     * </ul>
      *
      * @param plate the registration plate string to validate
      * @return {@code true} if the plate is valid, {@code false} otherwise
      */
     public static boolean isValid(final String plate) {
-        return TYPE_1_VEHICLE_PLATE_VALIDATOR.isValid(plate);
+        return TYPE_1_PLATE_VALIDATOR.isValid(plate);
     }
 
     /**
@@ -100,12 +93,6 @@ public final class VehiclePlateValidator {
      * <p>
      * This method checks if the plate conforms to the specified format type only.
      * Use this method when you know the expected plate type.
-     * The validation includes:
-     * <ul>
-     *   <li>Null check.</li>
-     *   <li>Length check.</li>
-     *   <li>Character pattern validation.</li>
-     * </ul>
      *
      * @param plate the registration plate string to validate.
      * @param type  vehicle state registration plate {@link VehiclePlateType type}.
@@ -125,7 +112,7 @@ public final class VehiclePlateValidator {
      */
     private static AbstractPlateValidator getValidator(final VehiclePlateType type) {
         return switch (type) {
-            case TYPE_1, TYPE_1A -> TYPE_1_VEHICLE_PLATE_VALIDATOR;
+            case TYPE_1, TYPE_1A -> TYPE_1_PLATE_VALIDATOR;
         };
     }
 }

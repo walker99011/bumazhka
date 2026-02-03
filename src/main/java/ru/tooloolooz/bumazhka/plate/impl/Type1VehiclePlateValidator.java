@@ -6,7 +6,7 @@ import ru.tooloolooz.bumazhka.plate.AbstractPlateValidator;
 import ru.tooloolooz.bumazhka.plate.VehiclePlateType;
 
 /**
- * Concrete implementation of a validator for Type 1 vehicle registration plates.
+ * Implementation of a validator for Type 1 vehicle registration plates.
  * <p>
  * This utility class provides validation for Russian Federation vehicle state registration plates.
  * <p>
@@ -32,15 +32,14 @@ import ru.tooloolooz.bumazhka.plate.VehiclePlateType;
  * @see VehiclePlateType#TYPE_1
  * @see <a href="https://docs.cntd.ru/document/1200160380">GOST R 50577-2018 State Registration Plates for Vehicles</a>
  */
-public final class Type1VehiclePlateAbstractPlateValidator implements AbstractPlateValidator {
+public final class Type1VehiclePlateValidator implements AbstractPlateValidator {
     /**
      * Singleton instance of the Type 1 vehicle plate validator.
      * <p>
      * Use this instance for all Type 1 plate validations to ensure consistency
      * and avoid unnecessary object instantiation.
      */
-    public static final Type1VehiclePlateAbstractPlateValidator INSTANCE =
-            new Type1VehiclePlateAbstractPlateValidator();
+    public static final Type1VehiclePlateValidator INSTANCE = new Type1VehiclePlateValidator();
 
     /**
      * Maximum allowed plate length (9 characters).
@@ -92,23 +91,25 @@ public final class Type1VehiclePlateAbstractPlateValidator implements AbstractPl
     private static final int POSITION_6 = 6;
 
     /**
-     * This class is a utility class and should not be instantiated.
-     *
-     * @throws UnsupportedOperationException always.
+     * Private constructor to enforce non-instantiability.
+     * <p>
+     * This class follows the utility class pattern and should not be instantiated.
+     * All functionality is provided through static methods and the singleton instance
+     * {@link #INSTANCE}.
      */
-    private Type1VehiclePlateAbstractPlateValidator() {
-        Assert.unsupported("Utility class should not be instantiated");
+    private Type1VehiclePlateValidator() {
+        // Private constructor to prevent instantiation.
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * <b>Allowed Letters (12 total):</b> 'А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'
+     * <b>Allowed Cyrillic letters (12 total):</b> 'А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'
      * <p>
      */
     @Override
     public boolean isValid(final String plate) {
-        Assert.notNull(plate, "Plate must be not empty");
+        Assert.notNull(plate, "Plate must be not null");
         final int plateLength = plate.length();
         if (plateLength < MIN_PLATE_SIZE || MAX_PLATE_SIZE < plateLength) {
             return false;
@@ -141,6 +142,7 @@ public final class Type1VehiclePlateAbstractPlateValidator implements AbstractPl
      * {@code false} otherwise (including Latin letters, other Cyrillic letters,
      * digits, symbols, etc.)
      */
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     private static boolean isAllowedLetter(final char character) {
         return switch (character) {
             case 'А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х' -> true;
