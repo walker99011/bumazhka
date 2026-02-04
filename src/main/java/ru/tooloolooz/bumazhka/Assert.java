@@ -6,7 +6,7 @@ import org.jspecify.annotations.Nullable;
  * Utility class for condition checking and exception throwing.
  * Provides methods for performing runtime condition checks.
  */
-final class Assert {
+public final class Assert {
 
     /**
      * This class is a utility class and should not be instantiated.
